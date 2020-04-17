@@ -1,10 +1,12 @@
 #!/bin/bash
 
 if [[ "$1" == 'init' ]]; then
+  cd $REPETERDIR/src/pulumi
+  npm install
+  echo "npm packages for pulumi installed" && echo ''
   read -p "Pelumi stack name.`echo $'\n '`e.g. repeter-nelson `echo $'\n '`" pulumi_stack
   read -p "AWS Region for EC2 Instance `echo $'\n '`" region
   ## Initialize pulumi stack repeter
-  cd $REPETERDIR/src/pulumi
   pulumi stack --stack=$pulumi_stack
   pulumi stack select $pulumi_stack
   pulumi config set aws:region $region
@@ -17,12 +19,12 @@ if [[ "$1" == 'init' ]]; then
   ## input_prompt public_ssh_key
   read -p "Public SSH Key `echo $'\n> '`" public_key
 
-  node $REPETERDIR/src/init_config.js $dns_host_zone "$tunnel_maps" "$public_key" $pulumi_stack $aws_region
+  node $REPETERDIR/src/init_config.js $dns_host_zone "$tunnel_maps" "$public_key" $pulumi_stack $region
+
   echo '' && echo ''
-  echo "RUNNING ./repeter pulumi up"  && echo '' && echo ''
-  $REPETERDIR/repeter aws up
-  echo "RUNNING ./repeter tunnel up" && echo '' && echo ''
-  $REPETERDIR/repeter tunnel up
+  echo "next, bring up the aws infra and the local tunnels"
+  echo "./repeter pulumi up"
+  echo "./repeter tunnel up"
 
 exit 0;
 

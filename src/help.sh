@@ -1,7 +1,7 @@
 if [[ "$1" == '--help' || "$1" == "help" ]]; then
   echo "
 
-repeter init           ## input configuration, then auto runs up and tunnel.
+repeter init           ## installs pulumi node_modules & creates the config file.
 repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
 repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
 repeter pulumi destroy ## Destroys AWS infra and Pulumi stack.

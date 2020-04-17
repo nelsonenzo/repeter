@@ -26,41 +26,45 @@ Pulumi is like terraform, but cooler.
 
 ## Install
 ```
-git clone <repo>
+git clone git@github.com:nelsonenzo/repeter.git
 cd repeter
 chmod +x repeter
 
-## make it executable anywhere puting a symlink in your path
-## or use ./repeter while in this directory.
-
+## ln makes it easier to run, but only from this directory.
+## alternately, just call it with ./repeter [options]
 ln -nfs "$PWD"/repeter $HOME/.local/bin/repeter
 ```
-## Install
-Run `repeter init`
+## Initialize
 ```
 repeter init
 ```
 Which will:
 - prompt you for config inputs and create config.json
-- run `repeter pulumi up`
-- run `repeter tunnel up`
-
-You can `cat config.example.json` if it helps you with the inputs.
-
+- You can `cat config.example.json` if it helps you with the inputs.
+- subdomains is the trickiest input. it's a space delimited list of subdomain:port
+`sub:localport sub2:localport2`
+- You can keep it simple and only forward one domain `sub:localport` to start.
 
 ## Usage
 This is how I typically use it in real life.
 ```
-## I run this just one time, and everything comes up entirely
+## I run this just one time
 repeter init
 > repeter-nelson
 > us-west-2
 > dev.nelsonenzo.com
 > www.nelson:3000 api.nelson:8000
-> my-ssh-PUBLIC-key text (not a file reference)
+> my-ssh-PUBLIC-key-text
+
+## bring up the aws infrastructure
+repeter pulumi up
+
+## start the local tunnel
+repeter tunnel up
 
 ## That will bring everything up.
-## If I have services running at 3000 and 8000, I can access them with
+## If I have services running at localhost:3000 and localhost:8000,
+## they can be accessed publicly on:
 curl www.nelson.dev.nelsonenzo.com
 curl api.nelson.dev.nelsonenzo.com
 

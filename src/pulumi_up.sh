@@ -9,5 +9,7 @@ if [[ "$1" == 'pulumi' ]] && [[ "$2" == 'up' ]]; then
   pulumi config set aws:region $_aws_region
   pulumi up --non-interactive
   cd $REPETERDIR
+  echo "bring up your local tunnels with"
+  echo "./repeter tunnel up"
   exit 0
 fi
