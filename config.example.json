@@ -1,0 +1,11 @@
+{
+  "dns_host_zone": "repeter.nelsonenzo.com",
+  "subdomains": "www.nelson api.nelson",
+  "local_ports": {
+    "www_nelson": "3000",
+    "api_nelson": "8000"
+  },
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCTUaboK49EnWjAHyeRFzsfumBfdvcVRrE+MNsHveJgNteMvueVbqiq2y3McIRZdR5zL8Bg4Gfp/Pbp8r6t/gYW1g1Lu0TnzSl47fLjnYUs3yAcVP5xD/ePE9fMDIr1BgP+iarEWYQULp/4WLhIcJmMszUFP+RN9XI4GjH1AAMRGWphnWQ9+rHOfAst1Yp06cECPbZGS0M+69t7gvbwDbBYRpGnEuVbSXVA3Dy7Wb9P3Lzp0aUiUCo5CD/xDodY0+XBX7+82aYbUY0T8vCSbxN61OXjiQXTV07R8rcs5hNxhVJCcgUijp/PQYNCAZjkP3Fde5UlQZGQMat03FCw6Uhllt6DczJ+n7XSh4lcI7ukFxrFqvlzgT6SXctWqwceZo7xUME70HOdXdZOo9yt6LQNk/ddAiWowqXIwEAqOP3+I+eOGU7fYjOc4l99uZpZbHr/vj1N0mt8s8bbTQqfUTSp3CAGqCQR1P/nPCwVYooiLB8iGQifz2ix92Sz2Obvd20+jDyHr3RyvOksBFG245BQIMJ70Gjl9TS1Uo2YoQjbU6mSqaZaxMA6Uq3WAYwg3lskrtHMdDqQTtgXMFYyA7QWyn27x5/Wu4IJkRmgfzs72ebnwrrPeBVen7/wXiFFJRGXDHelEblcUarwgDwQdddLgb+5VbKHIwGTz1chDh3ntw== nelsonh@gmail.com",
+  "pulumi_stack": "repeter-nelson",
+  "aws_region": "us-west-2"
+}

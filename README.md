@@ -1,0 +1,173 @@
+# Repeter
+## What is this?
+Proxy traffic from a custom DNS domain to your localhost.
+
+`www.nelson.dev.nelsonenzo.com` -> `localhost:4000`
+
+The domain becomes accessible from the public interwebs, which is usefull for:
+- developing authentication flows, like Sign in with Google, from your localhost.
+- If your a developer, show off your dev work to  your boss.
+- If your qa, show the developers what is off when run on your machine.
+
+Traffic is proxied via nginx run on an t2.micro ec2, and it connects to your localhost via a
+good old vashioned ssh tunnel.
+
+The AWS infra - dns, ssh keys, ec2 instances, and route53 is all automated using Pulumi.
+
+Pulumi is like terraform, but cooler.
+
+## Demo
+## Requirements
+- AWS IAM Keys that can manage ec2, ec2 keys, security groups, and Route53
+- Pulumi https://www.pulumi.com/docs/get-started/aws/install-pulumi/
+- node.js https://nodejs.org
+- jq https://stedolan.github.io/jq/
+- bash (untested with zsh shell, you have been warned)
+
+## Install
+```
+git clone <repo>
+cd repeter
+chmod +x repeter
+
+## make it executable anywhere puting a symlink in your path
+## or use ./repeter while in this directory.
+
+ln -nfs "$PWD"/repeter $HOME/.local/bin/repeter
+```
+## Install
+Run `repeter init`
+```
+repeter init
+```
+Which will:
+- prompt you for config inputs and create config.json
+- run `repeter pulumi up`
+- run `repeter tunnel up`
+
+You can `cat config.example.json` if it helps you with the inputs.
+
+
+## Usage
+This is how I typically use it in real life.
+```
+## I run this just one time, and everything comes up entirely
+repeter init
+> repeter-nelson
+> us-west-2
+> dev.nelsonenzo.com
+> www.nelson:3000 api.nelson:8000
+> my-ssh-PUBLIC-key text (not a file reference)
+
+## That will bring everything up.
+## If I have services running at 3000 and 8000, I can access them with
+curl www.nelson.dev.nelsonenzo.com
+curl api.nelson.dev.nelsonenzo.com
+
+## I turn down the tunnel when I don't want localhost exposed to the interwebs.
+repeter tunnel down
+
+## I edit the config file to change:
+## local_ports, subdomains, root domain, aws region, or public_key
+vi config.json
+
+## I apply the changes and restart the tunnels.
+repeter pulumi up
+repeter tunnel up
+
+## I delete the infrastructure when I don't want to pay for the micro instance.
+repeter pulumi down
+
+## Come back the next morning and bring it up again
+repeter pulumi up
+repeter tunnel up
+```
+
+After it's initialized, you don't need to run that again as long as `./config.json` is properly formatted, even after a `repeter pulumi destroy`.
+
+Run `repeter aws down`, then edit the local ports it maps to.
+
+You can edit the config file local_ports and then use `repeter pulumi up`
+and it will pick up your changes.
+
+If you change your subdomains, make sure to edit both the `subdomains` and `local_ports key values` accordingly.  The `key values` is the `subdomain with '.' and '-' replaced with an underscore _`  e.g. `auth.nelson-dev` -> `auth_nelson_dev`
+
+## All Commands
+```
+repeter init           ## input configuration, then auto runs up and tunnel.
+repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
+repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
+repeter pulumi destroy ## Destroys AWS infra and Pulumi stack.
+repeter tunnel up      ## Starts the all the ssh tunnels locally.
+repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
+repeter help           ## outputs this text.
+repeter status         ## Outputs pulumi stack status and tails tunnel logs.
+```
+## FAQ's
+Q: What advantages does this have over other sass offerings, free and paid?
+- more performative, especially when run in an AWS zone near where you sit.
+- fully customizeable DNS, using a record owned and managed by you.
+- you control the nginx config that does the proxy'ing if you need it to do something special.
+- traffic does not get served through a 3rd party's infrastructure.
+- turn the t2.micro up and down as you need it, no need to pay for infra when it's not in use.
+
+Q: Does it support SSL?
+- No, not yet.
+
+Q: Does it support other cloud providers?
+- No, not yet.
+
+Q: Where is the nginx config?
+- `src/pulumi/user_data.sh.ejs`
+- look for the `server{ }` block.
+
+Q: Why is `repeter` spelled wrong?
+- It's not. It's french. Google it.
+
+## Alpha Release
+This code was assembled "hackathon style" over a few days, aka it's ugly. Going between bash and node.js did not help any.  A re-write to purely node.js is likely in this repo's future.  Please report bugs, request for help, and feature requests via github.
+
+## Security
+Alpha.  SSH tunnels are quite secure, but at the time of this alpha release, there was not much thought to restricting the ssh user on the ec2 that is created.  Only allow developers you trust to have ssh'ed into your aws environment to do so.
+
+## Troubleshooting
+If you see a message like this, wait for dns to resolve and try `./repeter tunnel up` in a couple minutes.
+```
+auth@auth.config.repeter.nelsonenzo.com: Permission denied (publickey).
+Bad remote forwarding specification ':<html>
+```
+**Check if DNS resolves**
+
+`dig -t A api.nelson.repeter.nelsonenzo.com`
+
+You should get back an A record that matches the ip `repeter pulumi up` spits out at the end.
+
+**Check config.json file**
+```
+cat config.json
+```
+It should look like this:
+```
+{
+  "dns_host_zone": "repeter.nelsonenzo.com",
+  "subdomains": "auth.nelson api.nelson www.nelson",
+  "local_ports": {
+    "auth_nelson": "4000",
+    "api_nelson": "9000",
+    "www_nelson": "8000"
+  },
+  "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCTUaboK49EnWjAHyeRFzsfumBfdvcVRrE+MNsHveJgNteMvueVbqiq2y3McIRZdR5zL8Bg4Gfp/Pbp8r6t/gYW1g1Lu0TnzSl47fLjnYUs3yAcVP5xD/ePE9fMDIr1BgP+iarEWYQULp/4WLhIcJmMszUFP+RN9XI4GjH1AAMRGWphnWQ9+rHOfAst1Yp06cECPbZGS0M+69t7gvbwDbBYRpGnEuVbSXVA3Dy7Wb9P3Lzp0aUiUCo5CD/xDodY0+XBX7+82aYbUY0T8vCSbxN61OXjiQXTV07R8rcs5hNxhVJCcgUijp/PQYNCAZjkP3Fde5UlQZGQMat03FCw6Uhllt6DczJ+n7XSh4lcI7ukFxrFqvlzgT6SXctWqwceZo7xUME70HOdXdZOo9yt6LQNk/ddAiWowqXIwEAqOP3+I+eOGU7fYjOc4l99uZpZbHr/vj1N0mt8s8bbTQqfUTSp3CAGqCQR1P/nPCwVYooiLB8iGQifz2ix92Sz2Obvd20+jDyHr3RyvOksBFG245BQIMJ70Gjl9TS1Uo2YoQjbU6mSqaZaxMA6Uq3WAYwg3lskrtHMdDqQTtgXMFYyA7QWyn27x5/Wu4IJkRmgfzs72ebnwrrPeBVen7/wXiFFJRGXDHelEblcUarwgDwQdddLgb+5VbKHIwGTz1chDh3ntw== nelsonh@gmail.com"
+}
+```
+- dns_host_zone should not begin with a period
+- subdomains should not have a . at their end either.
+- local_ports is a json object of subdomain with '.' and '-' replaced with '\_' as keys
+- public_key should be your actual public key, not a file reference.  Be sure you have added your private key to the running ssh-agent via `ssh-agent add ~/.ssh/private_key.pem`. Use `ssh-agent -l` to verify.
+
+**Check status of Pulumi stack and ssh tunnel logs**
+```
+repeter status
+```
+This runs `pulumi stack status` and tails the logs file in ./logs/*
+## License
+idk, MIT, I guess.

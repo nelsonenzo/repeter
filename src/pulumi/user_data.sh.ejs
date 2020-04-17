@@ -1,0 +1,54 @@
+#!/bin/bash
+sudo apt-get update && sudo apt-get install -y nginx
+
+## create user for every user specified in parameter
+UUID=2020
+ends="<%= endpoints %>"
+echo $ends > /verify_ends
+for ENDPOINT in $(echo $ends);
+  do
+  USER=$(echo $ENDPOINT | awk -F '.' '{print $1}')
+  UUID=$((UUID+1))
+  sudo useradd --uid $UUID $USER;
+  sudo mkdir -p -m 0700 /home/$USER/.ssh;
+  echo "<%= public_key %>" | sudo tee /home/$USER/.ssh/authorized_keys;
+  sudo chown -R $USER /home/$USER;
+done;
+
+
+PORT_COUNT=8000
+for DOMAIN in $ends; do
+  touch /etc/nginx/conf.d/"$DOMAIN".conf
+  FILE=/etc/nginx/conf.d/"$DOMAIN".conf
+
+  cat > $FILE <<- EOM
+  server {
+      listen       80;
+      server_name  $DOMAIN;
+
+      location /_port/$DOMAIN {
+        return 200 "$PORT_COUNT";
+      }
+
+      location / {
+        proxy_set_header Host            \$host;
+        proxy_set_header X-Forwarded-For \$remote_addr;
+        proxy_pass http://localhost:$PORT_COUNT;
+      }
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+          root   /usr/share/nginx/html;
+      }
+  }
+
+EOM
+
+  PORT_COUNT=$((PORT_COUNT+1));
+  # let "FIRST_PORT=FIRST_PORT+1"
+done;
+
+sudo service nginx restart
+
+#git clone git@bitbucket.org:eyediagnosis/nelson-hernandez-senior-devops-task.git
+#cd /root/nelson-hernandez-senior-devops-task/docker
+#sudo docker-compose up
