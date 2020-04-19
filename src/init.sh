@@ -32,8 +32,9 @@ Public SSH Key
 eg > ssh-rsa ABz...3nt== jane@gmail.com
 > " public_key
 
+  mkdir -p "$HOME/.repeter"
   node $REPETERDIR/src/init_config.js $dns_host_zone "$tunnel_maps" "$public_key" $pulumi_stack $region
-  hLineBreakEcho "./config.json file created"
+  hLineBreakEcho "$HOME/.repeter/config.json file created"
 
   ## Initialize pulumi stack
   pulumi stack init --stack=$pulumi_stack --non-interactive

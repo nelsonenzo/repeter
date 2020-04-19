@@ -1,5 +1,7 @@
-// read ./config.json
-let config = require('../../config.json')
+// read $HOME/.repeter/config.json
+const homedir = require('os').homedir();
+let config = require(`${homedir}/.repeter/config.json`)
+
 const PUBLIC_KEY = config.public_key;
 const SUBDOMAINS = config.subdomains;
 const DNS_HOST_ZONE = config.dns_host_zone;

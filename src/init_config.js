@@ -1,4 +1,5 @@
 fs = require('fs');
+const homedir = require('os').homedir();
 
 var myArgs = process.argv.slice(2);
 
@@ -33,9 +34,9 @@ let config = {
    pulumi_stack: pulumi_stack,
    aws_region: aws_region
 }
-
+const config_file = homedir + '/.repeter/config.json'
 // fs.writeFile('testconfig.json', config)
-fs.writeFile('config.json', JSON.stringify(config, undefined, 2), (err) => {
+fs.writeFile(config_file, JSON.stringify(config, undefined, 2), (err) => {
   if (err) return console.log(err);
   // console.log(data)
 });

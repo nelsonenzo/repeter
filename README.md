@@ -73,7 +73,7 @@ repeter tunnel down
 
 ## I edit the config file to change:
 ## local_ports, subdomains, root domain, aws region, or public_key
-vi config.json
+vi ~/.repeter/config.json
 
 ## I apply the changes and restart the tunnels.
 repeter pulumi up
@@ -148,7 +148,7 @@ You should get back an A record that matches the ip `repeter pulumi up` spits ou
 
 **Check config.json file**
 ```
-cat config.json
+cat ~/.repeter/config.json
 ```
 It should look like this:
 ```
