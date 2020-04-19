@@ -36,7 +36,7 @@ eg > ssh-rsa ABz...3nt== jane@gmail.com
   hLineBreakEcho "./config.json file created"
 
   ## Initialize pulumi stack
-  pulumi stack --stack=$pulumi_stack --non-interactive
+  pulumi stack init --stack=$pulumi_stack --non-interactive
   pulumi stack select $pulumi_stack
   pulumi config set aws:region $region
 
