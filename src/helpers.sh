@@ -3,11 +3,11 @@ STRIPQ(){
   echo ${instring//\"/}
 }
 CONFIG(){
-  STRIPQ $(cat $REPETERDIR/config.json | jq ".$1")
+  STRIPQ $(cat $HOME/.repeter/config.json | jq ".$1")
 }
 KILL_SSH_TUNNELS(){
-    subdomains=$(cat $REPETERDIR/config.json | jq '.subdomains')
-    domain=$(cat $REPETERDIR/config.json | jq '.dns_host_zone')
+    subdomains=$(CONFIG "subdomains")
+    domain=$(CONFIG "dns_host_zone")
 
     for sub in $subdomains; do
       user=$(echo $sub | awk -F '.' '{print $1}')
