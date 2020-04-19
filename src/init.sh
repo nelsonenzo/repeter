@@ -1,9 +1,5 @@
 #!/bin/bash
-hLineBreakEcho(){ _message=$1;
-  echo "" && echo "====++++----repeter----++++===="
-  echo $_message
-  echo "====++++----repeter----++++====" && echo ""
-}
+
 if [[ "$1" == 'init' ]]; then
   cd $REPETERDIR/src/pulumi
   npm install

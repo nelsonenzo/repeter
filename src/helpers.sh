@@ -14,3 +14,8 @@ KILL_SSH_TUNNELS(){
       pkill -9 -f "ssh.*$(STRIPQ ${user})@$(STRIPQ ${sub}).$(STRIPQ ${domain})"
     done
 }
+hLineBreakEcho(){ _message=$1;
+  echo "" && echo "====++++----repeter----++++===="
+  echo $_message
+  echo "====++++----repeter----++++====" && echo ""
+}
