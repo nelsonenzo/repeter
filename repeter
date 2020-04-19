@@ -5,6 +5,11 @@ COMMAND=$1
 # FORWARD_TO_PORT=$3
 REPETERDIR=$(echo $PWD)
 
+if [ $# -eq 0 ]; then
+    $REPETERDIR/repeter help
+    exit 1
+fi
+
 source $REPETERDIR/src/helpers.sh
 source $REPETERDIR/src/help.sh
 source $REPETERDIR/src/init.sh

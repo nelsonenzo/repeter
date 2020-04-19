@@ -1,30 +1,54 @@
 #!/bin/bash
-
+hLineBreakEcho(){ _message=$1;
+  echo "" && echo "====++++----repeter----++++===="
+  echo $_message
+  echo "====++++----repeter----++++====" && echo ""
+}
 if [[ "$1" == 'init' ]]; then
   cd $REPETERDIR/src/pulumi
   npm install
-  echo "npm packages for pulumi installed" && echo ''
-  read -p "Pelumi stack name.`echo $'\n '`e.g. repeter-nelson `echo $'\n '`" pulumi_stack
-  read -p "AWS Region for EC2 Instance `echo $'\n '`" region
-  ## Initialize pulumi stack repeter
-  pulumi stack --stack=$pulumi_stack
-  pulumi stack select $pulumi_stack
-  pulumi config set aws:region $region
-  cd $REPETERDIR
+
+  hLineBreakEcho "pulumi npm install complete"
+  hLineBreakEcho "4 questions for configuration:"
+
+  read -p "Pulumi stack name
+eg > repeter-nelson
+> " pulumi_stack
+
+  read -p "
+AWS Region for EC2 Instance
+eg > us-west-2 or us-east-1
+>" region
 
   ## input prompt domain/root_tld/host_zone_name
-  read -p "DNS Host Zone Name i.e. staging.yourcompany.com `echo $'\n> '`" dns_host_zone
-  ## input prompt sub.namespace:local_port sub2.namespace:local_port sub3.namespace:local_port
-  read -p "Subdomain:LocalPort i.e. www.nelson:3000 api.nelson:8000 `echo $'\n> '`" tunnel_maps
+  read -p "
+Route53 Managed DNS Host Zone Name
+eg > staging.yourcompany.com
+> " dns_host_zone
+
+  read -p "
+Space:Delimited Sub.domain:LocalPort
+eg > www.jane:3001 api.jane:4001 auth.jane:5001
+> " tunnel_maps
   ## input_prompt public_ssh_key
-  read -p "Public SSH Key `echo $'\n> '`" public_key
+  read -p "
+Public SSH Key
+eg > ssh-rsa ABz...3nt== jane@gmail.com
+> " public_key
 
   node $REPETERDIR/src/init_config.js $dns_host_zone "$tunnel_maps" "$public_key" $pulumi_stack $region
+  hLineBreakEcho "./config.json file created"
 
-  echo '' && echo ''
-  echo "next, bring up the aws infra and the local tunnels"
+  ## Initialize pulumi stack
+  pulumi stack --stack=$pulumi_stack --non-interactive
+  pulumi stack select $pulumi_stack
+  pulumi config set aws:region $region
+
+  hLineBreakEcho "Pulumi stack initialized locally "
+
+  cd $REPETERDIR
+  hLineBreakEcho "next, bring up the infrastructure."
   echo "./repeter pulumi up"
-  echo "./repeter tunnel up"
 
 exit 0;
 
