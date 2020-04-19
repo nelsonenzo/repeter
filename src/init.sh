@@ -14,7 +14,7 @@ eg > repeter-nelson
   read -p "
 AWS Region for EC2 Instance
 eg > us-west-2 or us-east-1
->" region
+> " region
 
   ## input prompt domain/root_tld/host_zone_name
   read -p "
