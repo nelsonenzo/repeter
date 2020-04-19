@@ -1,19 +1,19 @@
 
-local_port() {
-  _domain=$1;
-  _domain=$(echo "${_domain//\./_}")
-  _domain=$(echo "${_domain//-/_}")
-  _domain=$(echo "${_domain//\"/}")
-  _local_port=$(cat $REPETERDIR/config.json | jq ".local_ports.$_domain");
+fSubLocalPort() {
+  _subdomain=$1;
+  _subdomain=$(echo "${_subdomain//\./_}")
+  _subdomain=$(echo "${_subdomain//-/_}")
+  _subdomain=$(echo "${_subdomain//\"/}")
+  _local_port=$(CONFIG ".local_ports.$_subdomain")
   _local_port=${_local_port//\"/}
   echo $_local_port
 }
 
 if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'up' ]]; then
 
-  DNS_HOST_ZONE=$(cat $REPETERDIR/config.json | jq '.dns_host_zone') #"something.com"
-  SUBS=$(cat $REPETERDIR/config.json | jq '.subdomains') # "one two three"
-  LOCAL_PORTS=$(cat $REPETERDIR/config.json | jq '.local_ports')
+  DNS_HOST_ZONE=$(CONFIG ".dns_host_zone")
+  SUBS=$(CONFIG ".subdomains")
+  LOCAL_PORTS=$(CONFIG ".local_ports")
 
  for sub in $SUBS; do
    DOMAIN="${sub//\"/}.${DNS_HOST_ZONE//\"/}"
@@ -30,9 +30,9 @@ if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'up' ]]; then
 
    mkdir -p logs
 
-   FORWARD_TO_PORT=$(local_port $sub)
+   FORWARD_TO_PORT=$(fSubLocalPort $sub)
    echo $DOMAIN '->' localhost:$FORWARD_TO_PORT
-   # FORWARD_TO_PORT=${FORWARD_TO_PORT//\"/}
+
    ## begin the ssh tunnel
    ssh -N -R :$SSH_PORT:localhost:$FORWARD_TO_PORT $USER@$DOMAIN > $REPETERDIR/logs/$DOMAIN.log 2>&1 &
    # TODO: handle these responses:
