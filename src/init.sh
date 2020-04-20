@@ -1,5 +1,18 @@
 #!/bin/bash
+fPublicKeyFromFile(){
+  _key_file=$1
+  #gsub ~ with $HOME
+  _key_file=${_key_file/\~/$HOME/}
+  #check for file
+  if test -f "$_key_file"; then
+    echo $(cat $_key_file);
+    exit 0;
+  else
+    echo "$_key_file does not exist"
+    exit 1;
+  fi
 
+}
 if [[ "$1" == 'init' ]]; then
 
   mkdir -p "$REPETERDIR/src/pulumi"
@@ -9,6 +22,20 @@ if [[ "$1" == 'init' ]]; then
 
   cp src/pulumi/index.ts $REPETERDIR/src/cache/pulumi_index.ts
   cp src/pulumi/user_data.sh.ejs $REPETERDIR/src/cache/pulumi_user_data.sh.ejs
+  ## input_prompt public_ssh_key
+  read -p "
+PUBLIC ssh key file location
+eg > ~.ssh/nelson-ssh.pub
+> " public_key_file
+
+  public_key=$(fPublicKeyFromFile $public_key_file)
+  if [[ $? -eq 1 ]]; then
+    echo "Public Key File $public_key_file does not exist."
+    echo "format:  ~/.ssh/yourPUBLICkey.key"
+    echo "try again: ./repeter init"
+    exit 1;
+  fi
+
   read -p "Pulumi stack name
 eg > repeter-nelson
 > " pulumi_stack
@@ -28,17 +55,6 @@ eg > staging.yourcompany.com
 Space:Delimited Sub.domain:LocalPort
 eg > www.jane:3001 api.jane:4001 auth.jane:5001
 > " tunnel_maps
-  ## input_prompt public_ssh_key
-  read -p "
-Public SSH Key
-eg > ssh-rsa ABz...3nt== jane@gmail.com
-> " public_key
-# dns_host_zone="dev.nelsonenzo.com"
-# tunnel_maps="www:7003 api:7001 auth:7002"
-# public_key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCTUaboK49EnWjAHyeRFzsfumBfdvcVRrE+MNsHveJgNteMvueVbqiq2y3McIRZdR5zL8Bg4Gfp/Pbp8r6t/gYW1g1Lu0TnzSl47fLjnYUs3yAcVP5xD/ePE9fMDIr1BgP+iarEWYQULp/4WLhIcJmMszUFP+RN9XI4GjH1AAMRGWphnWQ9+rHOfAst1Yp06cECPbZGS0M+69t7gvbwDbBYRpGnEuVbSXVA3Dy7Wb9P3Lzp0aUiUCo5CD/xDodY0+XBX7+82aYbUY0T8vCSbxN61OXjiQXTV07R8rcs5hNxhVJCcgUijp/PQYNCAZjkP3Fde5UlQZGQMat03FCw6Uhllt6DczJ+n7XSh4lcI7ukFxrFqvlzgT6SXctWqwceZo7xUME70HOdXdZOo9yt6LQNk/ddAiWowqXIwEAqOP3+I+eOGU7fYjOc4l99uZpZbHr/vj1N0mt8s8bbTQqfUTSp3CAGqCQR1P/nPCwVYooiLB8iGQifz2ix92Sz2Obvd20+jDyHr3RyvOksBFG245BQIMJ70Gjl9TS1Uo2YoQjbU6mSqaZaxMA6Uq3WAYwg3lskrtHMdDqQTtgXMFYyA7QWyn27x5/Wu4IJkRmgfzs72ebnwrrPeBVen7/wXiFFJRGXDHelEblcUarwgDwQdddLgb+5VbKHIwGTz1chDh3ntw== nelsonh@gmail.com
-# "
-# pulumi_stack="test-stack"
-# region="us-west-2"
 
   # create ~/.repeter/config.json
   node "$REPETERDIR/src/init_config.js" $dns_host_zone "$tunnel_maps" "$public_key" $pulumi_stack $region
