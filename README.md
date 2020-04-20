@@ -17,7 +17,7 @@ The AWS infra - dns, ssh keys, ec2 instances, and route53 is all automated using
 Pulumi is like terraform, but cooler.
 
 ## Demo
-![demo gif](https://public-repeter.s3-us-west-2.amazonaws.com/demo1.gif)
+[Click for a Demo Gif, it's 8MB](https://public-repeter.s3-us-west-2.amazonaws.com/demo1.gif)
 
 ## Requirements
 - AWS IAM Keys that can manage ec2, ec2 keys, security groups, and Route53
