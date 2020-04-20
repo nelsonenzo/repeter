@@ -12,12 +12,13 @@ fSubLocalPort() {
 
 if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'up' ]]; then
 
-  # DNS_HOST_ZONE=$(CONFIG ".dns_host_zone")
-  DNS_HOST_ZONE=$(STRIPQ $(cat $HOME/.repeter/config.json | jq ".dns_host_zone"))
-  SUBS=$(STRIPQ $(cat $HOME/.repeter/config.json | jq ".subdomains"))
-  # SUBS=$(CONFIG ".subdomains")
-  # LOCAL_PORTS=$(CONFIG ".local_ports")
+  DNS_HOST_ZONE=$(CONFIG "dns_host_zone")
 
+  # DO NOT CHANGE THIS TO $(CONFIG 'subdomains')
+  # the way StripQ works, it breaks it the space delimited array.
+  SUBS=$(cat $HOME/.repeter/config.json | jq ".subdomains")
+
+ echo $SUBS
  for sub in $SUBS; do
    DOMAIN="${sub//\"/}.${DNS_HOST_ZONE//\"/}"
 
