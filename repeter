@@ -15,7 +15,7 @@ source ./src/help.sh
 source ./src/init.sh
 source ./src/pulumi_down.sh
 source ./src/pulumi_up.sh
-source ./src/pulumi_destroy.sh
+source ./src/destroy.sh
 source ./src/status.sh
 source ./src/tunnel_down.sh
 source ./src/tunnel_up.sh

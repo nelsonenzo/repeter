@@ -4,5 +4,5 @@ if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'down' ]]; then
     rm $REPETERDIR/logs/$logfile 2>/dev/null
   done
   echo "ssh tunnels off. aws infra still running."
-  echo "use './repeter pulumi destroy' to delete all"
+  echo "use './repeter destroy' to delete all"
 fi

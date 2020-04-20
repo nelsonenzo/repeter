@@ -1,4 +1,4 @@
-if [[ "$1" == 'pulumi' ]] && [[ "$2" == 'destroy' ]]; then
+if [[ "$1" == 'destroy' ]]; then
   KILL_SSH_TUNNELS
   dPulumi=$REPETERDIR/src/pulumi
   pulumi --cwd $dPulumi destroy --stack $(CONFIG "pulumi_stack") --non-interactive
@@ -7,9 +7,9 @@ if [[ "$1" == 'pulumi' ]] && [[ "$2" == 'destroy' ]]; then
   # After this command completes, the stack will no longer be available for updates.
   # https://www.pulumi.com/docs/reference/cli/pulumi_stack_rm/
   pulumi --cwd $dPulumi stack rm $(CONFIG "pulumi_stack")  --non-interactive -y
-
+  rm -rf $REPETERDIR
   if [[ $? -eq 0 ]]; then
-    echo "pulumi stack and aws infra poof. gone."
+    echo "~/.repeter directory, pulumi stack and aws infra poof. gone."
     echo "you will need to run init again"
     echo "./repeter init"
   else

@@ -20,7 +20,10 @@ PORT_COUNT=8000
 for DOMAIN in $ends; do
   touch /etc/nginx/conf.d/"$DOMAIN".conf
   FILE=/etc/nginx/conf.d/"$DOMAIN".conf
-
+  ## this is an nginx, wrapped in bash, wrapped in ejs
+  ## nginx $vars must be escaped, ala:
+  ## \$remote_addr
+  ## bash vars are passed as quoted vars, just like in bash "$MY_BASH_VAR"
   cat > $FILE <<- EOM
   server {
       listen       80;
@@ -37,7 +40,7 @@ for DOMAIN in $ends; do
       }
       error_page   500 502 503 504  /50x.html;
       location = /50x.html {
-          root   /usr/share/nginx/html;
+        return 504 "repeter 500 502 503 504 message. host: \$host . it looks like your local ssh tunnels are down. try ./repeter tunnel up";
       }
   }
 

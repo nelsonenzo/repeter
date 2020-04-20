@@ -1,7 +1,6 @@
 #!/bin/bash
 
 if [[ "$1" == 'init' ]]; then
-  rm -rf $REPETERDIR
 
   mkdir -p "$REPETERDIR/src/pulumi"
   mkdir -p "$REPETERDIR/logs"

@@ -87,7 +87,7 @@ repeter pulumi up
 repeter tunnel up
 ```
 
-After it's initialized, you don't need to run that again as long as `./config.json` is properly formatted, even after a `repeter pulumi destroy`.
+After it's initialized, you don't need to run that again as long as `./config.json` is properly formatted, even after a `repeter destroy`.
 
 Run `repeter aws down`, then edit the local ports it maps to.
 
@@ -100,10 +100,10 @@ If you change your subdomains, make sure to edit both the `subdomains` and `loca
 ```
 repeter init           ## input configuration, then auto runs up and tunnel.
 repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
-repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
-repeter pulumi destroy ## Destroys AWS infra and Pulumi stack.
 repeter tunnel up      ## Starts the all the ssh tunnels locally.
 repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
+repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
+repeter destroy        ## Destroys AWS infra and Pulumi stack.
 repeter help           ## outputs this text.
 repeter status         ## Outputs pulumi stack status and tails tunnel logs.
 ```
