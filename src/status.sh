@@ -1,11 +1,10 @@
 if [[ "$1" == 'status' ]]; then
-  cd $REPETERDIR/src/pulumi
-  pulumi stack select $(CONFIG "pulumi_stack")
-  pulumi stack
+  dPulumi=$REPETERDIR/src/pulumi
+  pulumi --cwd=$dPulumi stack select $(CONFIG "pulumi_stack")
+  pulumi -cwd=$dPulumi stack
   cd $REPETERDIR/logs
-  for logfile in $(ls); do
-    tail $logfile
+  for logfile in $(ls $REPETERDIR/logs); do
+    tail $REPETERDIR/logs/$logfile
   done
-  cd $REPETERDIR
   exit 0
 fi

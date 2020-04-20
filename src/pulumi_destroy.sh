@@ -1,12 +1,21 @@
 if [[ "$1" == 'pulumi' ]] && [[ "$2" == 'destroy' ]]; then
   KILL_SSH_TUNNELS
-  cd $REPETERDIR
-  for logfile in $(ls $REPETERDIR/logs); do
-    rm $REPETERDIR/logs/$logfile 2>/dev/null
-  done
-  cd $REPETERDIR/src/pulumi
-  pulumi destroy --non-interactive
-  pulumi stack rm $(CONFIG "pulumi_stack") --non-interactive
-  cd $REPETERDIR
+  dPulumi=$REPETERDIR/src/pulumi
+  pulumi --cwd $dPulumi destroy --stack $(CONFIG "pulumi_stack") --non-interactive
+  # This command removes a stack and its configuration state.
+  # Please refer to the destroy command for removing a resources, as this is a distinct operation.
+  # After this command completes, the stack will no longer be available for updates.
+  # https://www.pulumi.com/docs/reference/cli/pulumi_stack_rm/
+  pulumi --cwd $dPulumi stack rm $(CONFIG "pulumi_stack")  --non-interactive -y
+
+  if [[ $? -eq 0 ]]; then
+    echo "pulumi stack and aws infra poof. gone."
+    echo "you will need to run init again"
+    echo "./repeter init"
+  else
+    echo "something went wrong"
+    exit 1
+  fi
+
   exit 0
 fi

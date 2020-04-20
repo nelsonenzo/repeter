@@ -3,19 +3,19 @@
 COMMAND=$1
 # DOMAIN=$2
 # FORWARD_TO_PORT=$3
-REPETERDIR=$(echo $PWD)
+REPETERDIR=$(echo $HOME/.repeter)
 
 if [ $# -eq 0 ]; then
     $REPETERDIR/repeter help
     exit 1
 fi
 
-source $REPETERDIR/src/helpers.sh
-source $REPETERDIR/src/help.sh
-source $REPETERDIR/src/init.sh
-source $REPETERDIR/src/pulumi_down.sh
-source $REPETERDIR/src/pulumi_up.sh
-source $REPETERDIR/src/pulumi_destroy.sh
-source $REPETERDIR/src/status.sh
-source $REPETERDIR/src/tunnel_down.sh
-source $REPETERDIR/src/tunnel_up.sh
+source ./src/helpers.sh
+source ./src/help.sh
+source ./src/init.sh
+source ./src/pulumi_down.sh
+source ./src/pulumi_up.sh
+source ./src/pulumi_destroy.sh
+source ./src/status.sh
+source ./src/tunnel_down.sh
+source ./src/tunnel_up.sh

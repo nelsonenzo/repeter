@@ -4,16 +4,19 @@ fSubLocalPort() {
   _subdomain=$(echo "${_subdomain//\./_}")
   _subdomain=$(echo "${_subdomain//-/_}")
   _subdomain=$(echo "${_subdomain//\"/}")
-  _local_port=$(CONFIG ".local_ports.$_subdomain")
+  _local_port=$(STRIPQ $(cat $HOME/.repeter/config.json | jq ".local_ports.${_subdomain}"))
+  # _local_port=$(CONFIG ".local_ports.${_subdomain}")
   _local_port=${_local_port//\"/}
   echo $_local_port
 }
 
 if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'up' ]]; then
 
-  DNS_HOST_ZONE=$(CONFIG ".dns_host_zone")
-  SUBS=$(CONFIG ".subdomains")
-  LOCAL_PORTS=$(CONFIG ".local_ports")
+  # DNS_HOST_ZONE=$(CONFIG ".dns_host_zone")
+  DNS_HOST_ZONE=$(STRIPQ $(cat $HOME/.repeter/config.json | jq ".dns_host_zone"))
+  SUBS=$(STRIPQ $(cat $HOME/.repeter/config.json | jq ".subdomains"))
+  # SUBS=$(CONFIG ".subdomains")
+  # LOCAL_PORTS=$(CONFIG ".local_ports")
 
  for sub in $SUBS; do
    DOMAIN="${sub//\"/}.${DNS_HOST_ZONE//\"/}"
