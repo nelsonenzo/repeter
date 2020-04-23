@@ -1,5 +1,7 @@
 #!/bin/bash
-sudo apt-get update && sudo apt-get install -y nginx
+sudo add-apt-repository -y ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install -y nginx certbot python-certbot-nginx
 
 ## create user for every user specified in parameter
 UUID=2020
@@ -29,7 +31,7 @@ for DOMAIN in $ends; do
       listen       80;
       server_name  $DOMAIN;
 
-      location /_port/$DOMAIN {
+      location /_repeterport/ {
         return 200 "$PORT_COUNT";
       }
 

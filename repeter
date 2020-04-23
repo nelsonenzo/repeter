@@ -6,7 +6,7 @@ COMMAND=$1
 REPETERDIR=$(echo $HOME/.repeter)
 
 if [ $# -eq 0 ]; then
-    $REPETERDIR/repeter help
+    ./repeter help
     exit 1
 fi
 
@@ -19,3 +19,8 @@ source ./src/destroy.sh
 source ./src/status.sh
 source ./src/tunnel_down.sh
 source ./src/tunnel_up.sh
+source ./src/https.sh
+
+if [ "$1" == 'https' ]; then
+    iEnableHttps
+fi

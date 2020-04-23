@@ -3,7 +3,7 @@ if [[ "$1" == 'pulumi' ]] && [[ "$2" == 'down' ]]; then
   dPulumi=$REPETERDIR/src/pulumi
   # Destroy an existing stack and its resources
   # https://www.pulumi.com/docs/reference/cli/pulumi_destroy/
-  pulumi --cwd $dPulumi destroy --stack $(CONFIG "pulumi_stack") --non-interactive
+  pulumi --cwd $dPulumi destroy --stack $(CONFIG "pulumi_stack") --non-interactive --yes
   cd $REPETERDIR
   exit 0
 fi
