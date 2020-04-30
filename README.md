@@ -21,7 +21,7 @@ Pulumi is like terraform, but cooler.
 
 ## Requirements
 - AWS IAM Keys that can manage ec2, ec2 keys, security groups, and Route53
-- Pulumi https://www.pulumi.com/docs/get-started/aws/install-pulumi/
+- Pulumi > 2.1 https://www.pulumi.com/docs/get-started/aws/install-pulumi/
 - node.js https://nodejs.org
 - jq https://stedolan.github.io/jq/
 - bash (untested with zsh shell, you have been warned)
