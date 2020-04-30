@@ -3,4 +3,3 @@ logs
 src/pulumi/node_modules
 reset.sh
 test.sh
-install_pulumi.sh
