@@ -26,7 +26,7 @@ if [[ "$1" == 'tunnel' ]] && [[ "$2" == 'up' ]]; then
    USER=$(echo $DOMAIN | awk -F '.' '{print $1}')
 
    ## fetch the ssh tunnel port configured on the server
-   SSH_PORT=$(curl -s $DOMAIN/_port/$DOMAIN)
+   SSH_PORT=$(curl --silent --location http://$DOMAIN/_repeterport/)
 
    ssh-keygen -f "$HOME/.ssh/known_hosts" -R "$DOMAIN" > /dev/null 2>&1
 

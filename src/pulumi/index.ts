@@ -1,3 +1,9 @@
+import * as pulumi from "@pulumi/pulumi";
+import * as aws from "@pulumi/aws";
+import * as awsx from "@pulumi/awsx";
+let ejs = require('ejs');
+
+export = async () => {
 // read $HOME/.repeter/config.json
 const homedir = require('os').homedir();
 let config = require(`${homedir}/.repeter/config.json`)
@@ -13,16 +19,12 @@ for (var SUB of SUBDOMAINS.split(' ')) {
 }
 ENDPOINTS = ENDPOINTS.trim()
 
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-import * as awsx from "@pulumi/awsx";
-let ejs = require('ejs');
-
 // Security Group
 const group = new aws.ec2.SecurityGroup("repeter", {
     ingress: [
         { protocol: "tcp", fromPort: 22, toPort: 22, cidrBlocks: ["0.0.0.0/0"] },
-        { protocol: "tcp", fromPort: 80, toPort: 80, cidrBlocks: ["0.0.0.0/0"] }
+        { protocol: "tcp", fromPort: 80, toPort: 80, cidrBlocks: ["0.0.0.0/0"] },
+        { protocol: "tcp", fromPort: 443, toPort: 443, cidrBlocks: ["0.0.0.0/0"] }
     ],
     egress: [
         { protocol: "tcp", fromPort: 0, toPort: 65535, cidrBlocks: ["0.0.0.0/0"] }
@@ -57,13 +59,14 @@ ejs.renderFile("user_data.sh.ejs",{endpoints: ENDPOINTS, public_key: PUBLIC_KEY 
 const server = new aws.ec2.Instance("repeter", {
     instanceType: size,
     securityGroups: [ group.name ], // reference the security group resource above
-    ami: ami.id,
+    // ami: ami.id,
+    ami: "ami-0d1cd67c26f5fca19",
     keyName: repeter_ssh_key.keyName,
     userData: userdata
 });
 
 // Assumes hosted zone itself already exists.
-const hostedZone = aws.route53.getZone({ name: DNS_HOST_ZONE });
+const hostedZone = await aws.route53.getZone({ name: DNS_HOST_ZONE });
 
 // loop through endpoints (which are subdomain.domain.ltd)
 // to create or update Route53 record
@@ -80,5 +83,9 @@ for (var i=0; i < endpoints.length; i++) {
   });
 }
 
-export const publicIp = server.publicIp;
-export const publicHostName = server.publicDns;
+
+    // create resources
+    return { publicIp: server.publicIp, publicHostName: server.publicDns };
+    // export const publicIp = server.publicIp;
+    // export const publicHostName = server.publicDns;
+}
