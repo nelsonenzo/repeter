@@ -108,6 +108,7 @@ repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
 repeter destroy        ## Destroys AWS infra and Pulumi stack.
 repeter help           ## outputs this text.
 repeter status         ## Outputs pulumi stack status and tails tunnel logs.
+repeter https          ## Enables https via letsencrypt. Run after "repeter pulumi up".
 ```
 ## FAQ's
 Q: What advantages does this have over other sass offerings, free and paid?

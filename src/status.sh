@@ -4,6 +4,9 @@ if [[ "$1" == 'status' ]]; then
   pulumi --cwd=$dPulumi stack
   cd $REPETERDIR/logs
   for logfile in $(ls $REPETERDIR/logs); do
+    echo "#############"
+    echo "Logfile Tail: $logfile"
+    echo "#############"
     tail $REPETERDIR/logs/$logfile
   done
   exit 0
