@@ -47,7 +47,20 @@ Which will:
 `sub:localport sub2:localport2`
 - You can keep it simple and only forward one domain `sub:localport` to start.
 
-## Usage
+## All Commands
+```
+repeter init           ## input configuration, then auto runs up and tunnel.
+repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
+repeter tunnel up      ## Starts the all the ssh tunnels locally.
+repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
+repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
+repeter destroy        ## Destroys AWS infra and Pulumi stack.
+repeter help           ## outputs this text.
+repeter status         ## Outputs pulumi stack status and tails tunnel logs.
+repeter https          ## Enables https via letsencrypt. Run after "repeter pulumi up".
+```
+
+## Typical Usage
 This is how I typically use it in real life.
 ```
 ## I run this just one time
@@ -98,18 +111,6 @@ and it will pick up your changes.
 
 If you change your subdomains, make sure to edit both the `subdomains` and `local_ports key values` accordingly.  The `key values` is the `subdomain with '.' and '-' replaced with an underscore _`  e.g. `auth.nelson-dev` -> `auth_nelson_dev`
 
-## All Commands
-```
-repeter init           ## input configuration, then auto runs up and tunnel.
-repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
-repeter tunnel up      ## Starts the all the ssh tunnels locally.
-repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
-repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
-repeter destroy        ## Destroys AWS infra and Pulumi stack.
-repeter help           ## outputs this text.
-repeter status         ## Outputs pulumi stack status and tails tunnel logs.
-repeter https          ## Enables https via letsencrypt. Run after "repeter pulumi up".
-```
 ## FAQ's
 Q: What advantages does this have over other sass offerings, free and paid?
 - more performative, especially when run in an AWS zone near where you sit.
@@ -119,7 +120,7 @@ Q: What advantages does this have over other sass offerings, free and paid?
 - turn the t2.micro up and down as you need it, no need to pay for infra when it's not in use.
 
 Q: Does it support SSL?
-- No, not yet.
+- Yes. After `./repeter pulumi up`, run `./repeter https`
 
 Q: Does it support other cloud providers?
 - No, not yet.
