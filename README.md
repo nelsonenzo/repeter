@@ -38,7 +38,7 @@ ln -nfs "$PWD"/repeter $HOME/.local/bin/repeter
 ```
 ## Initialize
 ```
-repeter init
+./repeter init
 ```
 Which will:
 - prompt you for config inputs and create config.json
@@ -49,15 +49,15 @@ Which will:
 
 ## All Commands
 ```
-repeter init           ## input configuration, then auto runs up and tunnel.
-repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
-repeter tunnel up      ## Starts the all the ssh tunnels locally.
-repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
-repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
-repeter destroy        ## Destroys AWS infra and Pulumi stack.
-repeter help           ## outputs this text.
-repeter status         ## Outputs pulumi stack status and tails tunnel logs.
-repeter https          ## Enables https via letsencrypt. Run after "repeter pulumi up".
+./repeter init           ## input configuration, then auto runs up and tunnel.
+./repeter pulumi up      ## Bring the AWS Infrastrure up using Pulumi.
+./repeter tunnel up      ## Starts the all the ssh tunnels locally.
+./repeter tunnel down    ## Stops the ssh tunnels locally, but leaves AWS infra up.
+./repeter pulumi down    ## Destroys AWS infra, leaves Pulumi stack.
+./repeter destroy        ## Destroys AWS infra and Pulumi stack.
+./repeter help           ## outputs this text.
+./repeter status         ## Outputs pulumi stack status and tails tunnel logs.
+./repeter https          ## Enables https via letsencrypt. Run after "repeter pulumi up".
 ```
 
 ## Typical Usage
@@ -120,7 +120,7 @@ Q: What advantages does this have over other sass offerings, free and paid?
 - turn the t2.micro up and down as you need it, no need to pay for infra when it's not in use.
 
 Q: Does it support SSL?
-- Yes. After `./repeter pulumi up`, run `./repeter https`
+- Yes! After `./repeter pulumi up`, run `./repeter https`. Give it about a minute for letsencrypt to resolve.
 
 Q: Does it support other cloud providers?
 - No, not yet.
@@ -129,8 +129,11 @@ Q: Where is the nginx config?
 - `src/pulumi/user_data.sh.ejs`
 - look for the `server{ }` block.
 
-Q: Why is `repeter` spelled wrong?
-- It's not. It's french. Google it.
+Q: Why is spelled `repeter` instead of `repeater`?
+- I like the French spelling better.
+
+Q: Why does it use Pulumi instead of Terraform?
+- I needed to learn Pulumi for work.  It will likely be ported to Terraform in the next couple months.
 
 ## Alpha Release
 This code was assembled "hackathon style" over a few days, aka it's ugly. Going between bash and node.js did not help any.  A re-write to purely node.js is likely in this repo's future.  Please report bugs, request for help, and feature requests via github.
@@ -167,9 +170,7 @@ It should look like this:
   "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCTUaboK49EnWjAHyeRFzsfumBfdvcVRrE+MNsHveJgNteMvueVbqiq2y3McIRZdR5zL8Bg4Gfp/Pbp8r6t/gYW1g1Lu0TnzSl47fLjnYUs3yAcVP5xD/ePE9fMDIr1BgP+iarEWYQULp/4WLhIcJmMszUFP+RN9XI4GjH1AAMRGWphnWQ9+rHOfAst1Yp06cECPbZGS0M+69t7gvbwDbBYRpGnEuVbSXVA3Dy7Wb9P3Lzp0aUiUCo5CD/xDodY0+XBX7+82aYbUY0T8vCSbxN61OXjiQXTV07R8rcs5hNxhVJCcgUijp/PQYNCAZjkP3Fde5UlQZGQMat03FCw6Uhllt6DczJ+n7XSh4lcI7ukFxrFqvlzgT6SXctWqwceZo7xUME70HOdXdZOo9yt6LQNk/ddAiWowqXIwEAqOP3+I+eOGU7fYjOc4l99uZpZbHr/vj1N0mt8s8bbTQqfUTSp3CAGqCQR1P/nPCwVYooiLB8iGQifz2ix92Sz2Obvd20+jDyHr3RyvOksBFG245BQIMJ70Gjl9TS1Uo2YoQjbU6mSqaZaxMA6Uq3WAYwg3lskrtHMdDqQTtgXMFYyA7QWyn27x5/Wu4IJkRmgfzs72ebnwrrPeBVen7/wXiFFJRGXDHelEblcUarwgDwQdddLgb+5VbKHIwGTz1chDh3ntw== nelsonh@gmail.com"
 }
 ```
-- dns_host_zone should not begin with a period
-- subdomains should not have a . at their end either.
-- local_ports is a json object of subdomain with '.' and '-' replaced with '\_' as keys
+- local_ports is a json object of subdomain with '.' and '-' characters replaced with '\_' as keys
 - public_key should be your actual public key, not a file reference.  Be sure you have added your private key to the running ssh-agent via `ssh-agent add ~/.ssh/private_key.pem`. Use `ssh-agent -l` to verify.
 
 **Check status of Pulumi stack and ssh tunnel logs**
